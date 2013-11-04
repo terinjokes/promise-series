@@ -1,0 +1,31 @@
+{
+  "name": "promise-series",
+  "version": "0.0.0",
+  "description": "Resolve promises in a series",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/terinjokes/promise-script.git"
+  },
+  "keywords": [
+    "promise",
+    "series"
+  ],
+  "author": "Terin Stock <terinjokes@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/terinjokes/promise-script/issues"
+  },
+  "devDependencies": {
+    "q": "~0.9.7",
+    "chai": "~1.8.1",
+    "chai-as-promised": "~4.1.0",
+    "es5-shim": "~2.1.0",
+    "sinon": "~1.7.3",
+    "sinon-chai": "~2.4.0",
+    "mocha": "~1.13.0"
+  }
+}
