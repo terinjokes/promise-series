@@ -1,12 +1,13 @@
 'use strict';
 var pending = {
-	then: function() {
-		return pending;
-	}
-};
+		then: function() {
+			return pending;
+		}
+	},
+	Deque = require('double-ended-queue');
 
 function PromiseSeries() {
-	this._calls = [];
+	this._calls = new Deque();
 }
 
 PromiseSeries.prototype.add = function(fn) {
@@ -14,17 +15,20 @@ PromiseSeries.prototype.add = function(fn) {
 };
 
 PromiseSeries.prototype.run = function() {
-	var length = this._calls.length,
-		index,
+	var call,
 		previous;
 
-	if (!length) {
+	if (this._calls.isEmpty()) {
 		return pending;
 	}
 
-	previous = this._calls[0]();
-	for (index = 1; index < length; index++) {
-		previous = previous.then(this._calls[index]);
+	while (call = this._calls.shift()) {
+		if (!previous) {
+			previous = call();
+			continue;
+		}
+
+		previous = previous.then(call);
 	}
 
 	return previous;

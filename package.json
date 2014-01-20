@@ -1,6 +1,6 @@
 {
   "name": "promise-series",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Resolve promises in a series",
   "main": "index.js",
   "scripts": {
@@ -23,9 +23,12 @@
     "q": "~0.9.7",
     "chai": "~1.8.1",
     "chai-as-promised": "~4.1.0",
-    "es5-shim": "~2.1.0",
+    "es5-shim": "~2.3.0",
     "sinon": "~1.7.3",
     "sinon-chai": "~2.4.0",
-    "mocha": "~1.13.0"
+    "mocha": "~1.16.2"
+  },
+  "dependencies": {
+    "double-ended-queue": "~2.0.0-0"
   }
 }
