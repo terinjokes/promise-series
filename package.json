@@ -1,6 +1,6 @@
 {
   "name": "promise-series",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Resolve promises in a series",
   "main": "index.js",
   "scripts": {
@@ -31,6 +31,7 @@
     "browserify": "~3.24.1"
   },
   "dependencies": {
-    "double-ended-queue": "~2.0.0-0"
+    "double-ended-queue": "~2.0.0-0",
+    "hybrid-map": "~0.1.0"
   }
 }

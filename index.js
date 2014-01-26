@@ -4,25 +4,30 @@ var pending = {
 			return pending;
 		}
 	},
-	Deque = require('double-ended-queue');
+	Deque = require('double-ended-queue'),
+	HybridMap = require('hybrid-map').HybridMap,
+	privateMap = new HybridMap();
 
 function PromiseSeries() {
-	this._calls = new Deque();
+	privateMap.set(this, {
+		calls: new Deque()
+	});
 }
 
 PromiseSeries.prototype.add = function(fn) {
-	this._calls.push(fn);
+	privateMap.get(this).calls.push(fn);
 };
 
 PromiseSeries.prototype.run = function() {
-	var call,
+	var calls = privateMap.get(this).calls,
+		call,
 		previous;
 
-	if (this._calls.isEmpty()) {
+	if (calls.isEmpty()) {
 		return pending;
 	}
 
-	while (call = this._calls.shift()) {
+	while (call = calls.shift()) {
 		if (!previous) {
 			previous = call();
 			continue;
