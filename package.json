@@ -4,7 +4,7 @@
   "description": "Resolve promises in a series",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "testem ci"
   },
   "repository": {
     "type": "git",
@@ -20,13 +20,15 @@
     "url": "https://github.com/terinjokes/promise-script/issues"
   },
   "devDependencies": {
-    "q": "~0.9.7",
+    "q": "~1.0.0",
     "chai": "~1.8.1",
     "chai-as-promised": "~4.1.0",
     "es5-shim": "~2.3.0",
     "sinon": "~1.7.3",
-    "sinon-chai": "~2.4.0",
-    "mocha": "~1.16.2"
+    "sinon-chai": "~2.5.0",
+    "mocha": "~1.17.1",
+    "testem": "~0.6.5",
+    "browserify": "~3.24.1"
   },
   "dependencies": {
     "double-ended-queue": "~2.0.0-0"
