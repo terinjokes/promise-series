@@ -28,7 +28,7 @@
     "sinon-chai": "~2.5.0",
     "mocha": "~1.17.1",
     "testem": "~0.6.5",
-    "browserify": "~3.24.1"
+    "browserify": "~3.46.1"
   },
   "dependencies": {
     "double-ended-queue": "~2.0.0-0",
