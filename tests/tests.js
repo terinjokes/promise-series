@@ -140,5 +140,26 @@ describe('PromiseSeries', function() {
 			});
 		});
 	});
-});
 
+	describe('Return array', function() {
+		var result;
+
+		before(function() {
+			var series = new PromiseSeries({
+				mode: 'array'
+			});
+			series.add(addOne);
+			series.add(addOne);
+			series.add(addOne);
+			result = series.run();
+		});
+
+		it('should return a promise', function() {
+			expect(result).to.have.property('then').that.is.a('function');
+		});
+
+		it('should eventually deep equal an array of incremental sums', function(done) {
+			expect(result).to.eventually.deep.equal([1,2,3]).and.notify(done);
+		});
+	});
+});

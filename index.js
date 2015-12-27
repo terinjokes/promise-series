@@ -8,9 +8,13 @@ var pending = {
 	HybridMap = require('hybrid-map').HybridMap,
 	privateMap = new HybridMap();
 
-function PromiseSeries() {
+function PromiseSeries(options) {
+	options = options || {};
+	options.mode = options.mode || 'reduce'; // or 'array'
 	privateMap.set(this, {
-		calls: new Deque()
+		calls: new Deque(),
+		results: [],
+		mode: options.mode
 	});
 }
 
@@ -19,7 +23,10 @@ PromiseSeries.prototype.add = function(fn) {
 };
 
 PromiseSeries.prototype.run = function() {
-	var calls = privateMap.get(this).calls,
+	var map = privateMap.get(this);
+	var calls = map.calls,
+		results = map.results,
+		mode = map.mode,
 		call,
 		previous;
 
@@ -32,12 +39,18 @@ PromiseSeries.prototype.run = function() {
 			previous = call();
 			continue;
 		}
-
-		previous = previous.then(call);
+		(function (_call) {
+			previous = previous.then(function (result) {
+				if (mode === 'array') results.push(result);
+				return _call(result);
+			});
+		})(call);
 	}
 
-	return previous;
+	return previous.then(function (result) {
+		results.push(result);
+		return mode === 'array' ? results : result;
+	});
 };
 
 module.exports = PromiseSeries;
-
