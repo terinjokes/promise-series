@@ -1,144 +1,170 @@
 'use strict';
 /* globals describe, it, before */
-var chai = require('chai'),
-	expect = chai.expect,
-	chaiAsPromised = require('chai-as-promised'),
-	sinon = require('sinon'),
-	sinonChai = require('sinon-chai'),
-	Q = require('q'),
-	PromiseSeries = require('../'),
-	addOne = Q.fbind(function(count) {
-		return count ? count + 1 : 1;
-	}),
-	throwError = Q.fbind(function() {
-		throw new Error('This is an error from the unit tests');
-	});
+var expect = require('assume');
+expect.use(require('assume-sinon'));
 
-chai.use(chaiAsPromised);
-chai.use(sinonChai);
+var sinon = require('sinon');
+var _Promise = require('core-js/library/es6/promise');
+var PromiseSeries = require('../');
+var isPromise = require('is-promise');
 
-describe('PromiseSeries', function() {
-	it('should export a function', function() {
-		expect(PromiseSeries).to.be.a('function');
-	});
+function addOne(count) {
+  return _Promise.resolve(count ? count + 1 : 1);
+}
+function throwError() {
+  return _Promise.reject(new Error('This is an error from the unit tests'));
+}
 
-	it('should create an instance', function() {
-		var series = new PromiseSeries();
-		expect(series).to.be.an.instanceof(PromiseSeries);
-	});
+describe('PromiseSeries', function () {
+  it('should export a function', function () {
+    expect(PromiseSeries).is.a('function');
+  });
 
-	it('should have an add method', function() {
-		var series = new PromiseSeries();
-		expect(series).to.have.property('add');
-	});
+  it('should create an instance', function () {
+    var series = new PromiseSeries();
+    expect(series).is.instanceOf(PromiseSeries);
+  });
 
-	it('should have a run method', function() {
-		var series = new PromiseSeries();
-		expect(series).to.have.property('run');
-	});
+  it('should have an add method', function () {
+    var series = new PromiseSeries();
+    expect(series.add).is.a('function');
+  });
 
-	describe('No functions added', function() {
-		var result;
-		before(function() {
-			var series = new PromiseSeries();
-			result = series.run();
-		});
+  it('should have a run method', function () {
+    var series = new PromiseSeries();
+    expect(series.run).is.a('function');
+  });
 
-		it('should return a promise', function() {
-			expect(result).to.have.property('then').that.is.a('function');
-		});
+  describe('No functions added', function () {
+    var result;
+    before(function () {
+      var series = new PromiseSeries();
+      result = series.run();
+    });
 
-		it('should not be fulfilled', function(done) {
-			this.timeout(3000);
-			expect(result).to.not.be.eventually.fulfilled.and.notify(done);
-			setTimeout(done, 2000);
-		});
-	});
+    it('should return a promise', function () {
+      expect(isPromise(result)).true();
+    });
 
-	describe('One function added', function() {
-		var result;
+    it('should not be fulfilled', function (done) {
+      this.timeout(3000);
+      done = expect.wait(1, 0, done);
 
-		before(function() {
-			var series = new PromiseSeries();
-			series.add(addOne);
-			result = series.run();
-		});
+      result.then(function () {
+        done(new Error('should not have been resolved'));
+      }, done);
 
-		it('should return a promise', function() {
-			expect(result).to.have.property('then').that.is.a('function');
-		});
+      setTimeout(done, 2000);
+    });
+  });
 
-		it('should eventually be equal 1', function(done) {
-			expect(result).to.eventually.equal(1).and.notify(done);
-		});
+  describe('One function added', function () {
+    var result;
 
-		describe('Error thrown', function() {
-			var result;
+    before(function () {
+      var series = new PromiseSeries();
+      series.add(addOne);
+      result = series.run();
+    });
 
-			before(function() {
-				var series = new PromiseSeries();
-				series.add(throwError);
-				result = series.run();
-			});
+    it('should return a promise', function () {
+      expect(isPromise(result)).true();
+    });
 
-			it('should return a promise', function() {
-				expect(result).to.have.property('then').that.is.a('function');
-			});
+    it('should eventually be equal 1', function (done) {
+      done = expect.wait(1, 1, done);
 
-			it('should eventually be rejected', function(done) {
-				expect(result).to.eventually.be.rejectedWith(Error).and.notify(done);
-			});
-		});
-	});
+      result.then(function (value) {
+        expect(value).equals(1);
+        done();
+      }, done);
+    });
 
-	describe('Multiple functions added', function() {
-		var result;
+    describe('Error thrown', function () {
+      var result;
 
-		before(function() {
-			var series = new PromiseSeries();
-			series.add(addOne);
-			series.add(addOne);
-			series.add(addOne);
-			series.add(addOne);
-			series.add(addOne);
-			result = series.run();
-		});
+      before(function () {
+        var series = new PromiseSeries();
+        series.add(throwError);
+        result = series.run();
+      });
 
-		it('should return a promise', function() {
-			expect(result).to.have.property('then').that.is.a('function');
-		});
+      it('should return a promise', function () {
+        expect(isPromise(result)).true();
+      });
 
-		it('should eventually be equal 5', function(done) {
-			expect(result).to.eventually.equal(5).and.notify(done);
-		});
+      it('should eventually be rejected', function (done) {
+        done = expect.wait(1, 1, done);
 
-		describe('Error thrown', function() {
-			var stub = sinon.stub().returns(Q.resolve()),
-				result;
+        result.then(function () {
+          done(new Error('should not have resolved'));
+        }, function (err) {
+          expect(err).is.a('error');
+          done();
+        });
+      });
+    });
+  });
 
-			before(function() {
-				var series = new PromiseSeries();
-				series.add(stub);
-				series.add(stub);
-				series.add(throwError);
-				series.add(stub);
-				series.add(stub);
-				result = series.run();
-			});
+  describe('Multiple functions added', function () {
+    var result;
 
-			it('should return a promise', function() {
-				expect(result).to.have.property('then').that.is.a('function');
-			});
+    before(function () {
+      var series = new PromiseSeries();
+      series.add(addOne);
+      series.add(addOne);
+      series.add(addOne);
+      series.add(addOne);
+      series.add(addOne);
+      result = series.run();
+    });
 
-			it('should eventually be rejected', function(done) {
-				expect(result).to.eventually.be.rejectedWith(Error).and.notify(done);
-			});
+    it('should return a promise', function () {
+      expect(isPromise(result)).true();
+    });
 
-			it('should ahve only counted the stub twice', function() {
-				/* jshint expr:true */
-				expect(stub).to.have.been.calledTwice;
-			});
-		});
-	});
+    it('should eventually be equal 5', function (done) {
+      done = expect.wait(1, 1, done);
+
+      result.then(function (value) {
+        expect(value).equals(5);
+        done();
+      }, done);
+    });
+
+    describe('Error thrown', function () {
+      var stub = sinon.stub().returns(_Promise.resolve());
+      var result;
+
+      before(function () {
+        var series = new PromiseSeries();
+        series.add(stub);
+        series.add(stub);
+        series.add(throwError);
+        series.add(stub);
+        series.add(stub);
+        result = series.run();
+      });
+
+      it('should return a promise', function () {
+        expect(isPromise(result)).true();
+      });
+
+      it('should eventually be rejected', function (done) {
+        done = expect.wait(1, 1, done);
+
+        result.then(function () {
+          done(new Error('should not have resolved'));
+        }, function (err) {
+          expect(err).is.a('error');
+          done();
+        });
+      });
+
+      it('should ahve only counted the stub twice', function () {
+        expect(stub).called(2);
+      });
+    });
+  });
 });
 
