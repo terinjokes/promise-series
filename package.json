@@ -20,7 +20,7 @@
     "url": "https://github.com/terinjokes/promise-series/issues"
   },
   "dependencies": {
-    "core-js": "^2.0.0",
+    "core-js": "^2.1.5",
     "double-ended-queue": "^2.1.0-0"
   },
   "devDependencies": {
