@@ -5,8 +5,8 @@ expect.use(require('assume-sinon'));
 
 var sinon = require('sinon');
 var _Promise = require('core-js/library/es6/promise');
-var PromiseSeries = require('../');
 var isPromise = require('is-promise');
+var PromiseSeries = require('../');
 
 function addOne(count) {
   return _Promise.resolve(count ? count + 1 : 1);
