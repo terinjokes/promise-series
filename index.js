@@ -27,7 +27,8 @@ PromiseSeries.prototype.run = function () {
     return pending;
   }
 
-  while ((call = calls.shift())) {
+  while (calls.length) {
+    call = calls.shift();
     if (!previous) {
       previous = call();
       continue;
@@ -40,4 +41,3 @@ PromiseSeries.prototype.run = function () {
 };
 
 module.exports = PromiseSeries;
-
