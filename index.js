@@ -1,9 +1,4 @@
 'use strict';
-var pending = {
-  then: function () {
-    return pending;
-  }
-};
 var Deque = require('double-ended-queue');
 var WeakMap = require('core-js/library/es6/weak-map');
 var privateMap = new WeakMap();
@@ -24,7 +19,7 @@ PromiseSeries.prototype.run = function () {
   var previous;
 
   if (calls.isEmpty()) {
-    return pending;
+    throw new Error('PromiseSeries is empty');
   }
 
   while (calls.length) {
