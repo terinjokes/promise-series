@@ -1,6 +1,7 @@
 'use strict';
 var Deque = require('double-ended-queue');
 var WeakMap = require('core-js/library/es6/weak-map');
+
 var privateMap = new WeakMap();
 
 function PromiseSeries() {
