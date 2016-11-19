@@ -12,6 +12,7 @@ function PromiseSeries() {
 
 PromiseSeries.prototype.add = function (fn) {
   privateMap.get(this).calls.push(fn);
+  return this;
 };
 
 PromiseSeries.prototype.run = function () {

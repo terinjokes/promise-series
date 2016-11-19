@@ -5,11 +5,12 @@ import PromiseSeries from '../';
 
 test.beforeEach(t => {
   t.context.series = new PromiseSeries();
-  t.context.series.add(addOne);
-  t.context.series.add(addOne);
-  t.context.series.add(addOne);
-  t.context.series.add(addOne);
-  t.context.series.add(addOne);
+  t.context.series
+    .add(addOne)
+    .add(addOne)
+    .add(addOne)
+    .add(addOne)
+    .add(addOne);
 });
 
 test('series returns a Promise', t => {
