@@ -1,5 +1,7 @@
 # Promise Series
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/terinjokes/promise-series.svg)](https://greenkeeper.io/)
+
 This `promise-series` modules allows you to queue promise-returning functions to execute in series, chaining values and errors down the line, and returning a final promise.
 
 ```javascript
